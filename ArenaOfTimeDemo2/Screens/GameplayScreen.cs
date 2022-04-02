@@ -95,16 +95,16 @@ namespace ArenaOfTimeDemo2.Screens
                 throw new ArgumentNullException(nameof(input));
 
             // Look up inputs for the active player profile.
-            int playerIndex = (int)ControllingPlayer.Value;
-
-            var keyboardState = input.CurrentKeyboardStates[playerIndex];
-            var gamePadState = input.CurrentGamePadStates[playerIndex];
+            
+            var gamePadState1 = input.CurrentGamePadStates[1];
+            var gamePadState2 = input.CurrentGamePadStates[2];
 
             // The game pauses either if the user presses the pause button, or if
             // they unplug the active gamepad. This requires us to keep track of
             // whether a gamepad was ever plugged in, because we don't want to pause
             // on PC if they are playing with a keyboard and have no gamepad at all!
-            bool gamePadDisconnected = !gamePadState.IsConnected && input.GamePadWasConnected[playerIndex];
+            bool gamePadDisconnected1 = !gamePadState1.IsConnected && input.GamePadWasConnected[1];
+            bool gamePadDisconnected2 = !gamePadState2.IsConnected && input.GamePadWasConnected[2];
 
             if (vikingSprite1.HealthPercent == 0 || vikingSprite2.HealthPercent == 0)
             {
@@ -118,14 +118,18 @@ namespace ArenaOfTimeDemo2.Screens
             }
 
             PlayerIndex player;
-            if (_pauseAction.Occurred(input, ControllingPlayer, out player) || gamePadDisconnected)
+            if (_pauseAction.Occurred(input, PlayerIndex.One, out player) || gamePadDisconnected1)
             {
-                ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
+                ScreenManager.AddScreen(new PauseMenuScreen(), PlayerIndex.One);
+            }
+            else if(_pauseAction.Occurred(input, PlayerIndex.Two, out player) || gamePadDisconnected2)
+            {
+                ScreenManager.AddScreen(new PauseMenuScreen(), PlayerIndex.Two);
             }
             else
             {
-                vikingSprite1.Update(gameTime);
-                vikingSprite2.Update(gameTime);
+                vikingSprite1.Update(gameTime, input);
+                vikingSprite2.Update(gameTime, input);
                 //check collisions
                 if (vikingSprite1.Hurtbox.Bounds.CollidesWith(vikingSprite2.Hurtbox.Bounds))
                 {

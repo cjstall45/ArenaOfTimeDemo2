@@ -12,11 +12,6 @@ namespace ArenaOfTimeDemo2.Fighters
     {
         private AnimationState animationState;
 
-        private KeyboardState keyboardState;
-        private KeyboardState previousKeyboardState;
-        private GamePadState gamePadState;
-        private GamePadState previousGamePadState;
-
         private float animationSpeed = 0.15f;
 
         private Texture2D[] idleTextures = new Texture2D[6];
@@ -122,54 +117,54 @@ namespace ArenaOfTimeDemo2.Fighters
         /// adds controls for player one on keyboard and player 2 on controller. updates animation state based on input and moves hitboxes for collisions 
         /// </summary>
         /// <param name="gameTime"></param>
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, InputState input)
         {
-            keyboardState = Keyboard.GetState();
-            gamePadState = GamePad.GetState(0); 
-            if (!activeAnimation && playerNumber == 1 && keyboardState.IsKeyDown(Keys.J) && previousKeyboardState.IsKeyUp(Keys.J))
+
+            var player = new PlayerIndex();
+            if (playerNumber == 1 &&!activeAnimation && input.IsButtonPressed(Buttons.A, PlayerIndex.One, out player ))
             {
                 activeAnimation = true;
                 animationState = AnimationState.attack1;
                 animationFrame = 0;
                 animationSpeed = .125f;
             }
-            else if (playerNumber == 1 && !activeAnimation && keyboardState.IsKeyDown(Keys.A))
+            else if (playerNumber == 1 && !activeAnimation && (input.IsButtonPressed(Buttons.DPadLeft, PlayerIndex.One, out player) || input.IsButtonPressed(Buttons.LeftThumbstickLeft, PlayerIndex.One, out player)))
             {
                 if (!CollidingLeft) Position += new Vector2((float)-2, 0); 
                 animationState = AnimationState.backingup;
             }
-            else if (playerNumber == 1 && !activeAnimation &&  keyboardState.IsKeyDown(Keys.D))
+            else if (playerNumber == 1 && !activeAnimation && (input.IsButtonPressed(Buttons.DPadRight, PlayerIndex.One, out player) || input.IsButtonPressed(Buttons.LeftThumbstickRight, PlayerIndex.One, out player)))
             {
                 if (!CollidingRight) { Position += new Vector2((float)2, 0); }
                 animationState = AnimationState.walking;
             }
-            else if (playerNumber == 1 && !activeAnimation && keyboardState.IsKeyDown(Keys.K))
+            else if (playerNumber == 1 &&!activeAnimation && input.IsButtonPressed(Buttons.B, PlayerIndex.One, out player))
             {
                 activeAnimation = true;
                 animationState = AnimationState.block;
                 animationFrame = 0;
                 Hurtbox.Active = false;
             }
-            else if (!activeAnimation && playerNumber != 1 && gamePadState.IsButtonDown(Buttons.A) && previousGamePadState.IsButtonUp(Buttons.A))
+            else if (playerNumber == 2 && !activeAnimation && input.IsButtonPressed(Buttons.A, PlayerIndex.Two, out player))
             {
                 activeAnimation = true;
                 animationState = AnimationState.attack1;
                 animationFrame = 0;
                 animationSpeed = .125f;
             }
-            else if (playerNumber != 1 && !activeAnimation && gamePadState.IsButtonDown(Buttons.B) && previousGamePadState.IsButtonUp(Buttons.B))
+            else if (playerNumber == 2 && !activeAnimation && input.IsButtonPressed(Buttons.B, PlayerIndex.Two, out player))
             {
                 activeAnimation = true;
                 animationState = AnimationState.block;
                 animationFrame = 0;
                 Hurtbox.Active = false;
             }
-            else if (playerNumber!= 1 && !activeAnimation && gamePadState.IsButtonDown(Buttons.DPadLeft))
+            else if (playerNumber == 2 && !activeAnimation && (input.IsButtonPressed(Buttons.DPadLeft, PlayerIndex.Two, out player) || input.IsButtonPressed(Buttons.LeftThumbstickLeft, PlayerIndex.Two, out player)))
             {
                 if (!CollidingLeft) { Position += new Vector2((float)-2, 0); }
                 animationState = AnimationState.backingup;
             }
-            else if (playerNumber != 1 && !activeAnimation && gamePadState.IsButtonDown(Buttons.DPadRight))
+            else if (playerNumber == 2 && !activeAnimation && (input.IsButtonPressed(Buttons.DPadRight, PlayerIndex.Two, out player) || input.IsButtonPressed(Buttons.LeftThumbstickRight, PlayerIndex.Two, out player)))
             {
                 if (!CollidingRight) Position += new Vector2((float)2, 0); 
                 animationState = AnimationState.walking;
@@ -182,7 +177,6 @@ namespace ArenaOfTimeDemo2.Fighters
                 }
 
             }
-            previousKeyboardState = keyboardState;
             Hurtbox.Bounds.X = Position.X;
             Hurtbox.Bounds.Y = Position.Y;
             if(playerNumber == 1)

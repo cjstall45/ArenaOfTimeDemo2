@@ -36,7 +36,7 @@ namespace ArenaOfTimeDemo2.Screens
 
         private void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex,  new GameplayScreen());
+            LoadingScreen.Load(ScreenManager, true, null,  new CharacterSelectMenu());
         }
 
         protected override void OnCancel(PlayerIndex playerIndex)
