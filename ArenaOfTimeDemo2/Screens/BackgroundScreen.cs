@@ -18,10 +18,12 @@ namespace ArenaOfTimeDemo2.Screens
         private PersianSprite persianSprite;
         private VikingSprite vikingSprite;
 
+
+
         public BackgroundScreen()
         {
-            TransitionOnTime = TimeSpan.FromSeconds(0.5);
-            TransitionOffTime = TimeSpan.FromSeconds(0.5);
+            TransitionOnTime = TimeSpan.FromSeconds(5);
+            TransitionOffTime = TimeSpan.FromSeconds(5);
         }
 
         /// <summary>
@@ -43,6 +45,7 @@ namespace ArenaOfTimeDemo2.Screens
             ninjaSprite.LoadContent(_content);
             persianSprite.LoadContent(_content);
             vikingSprite.LoadContent(_content);
+
         }
 
         public override void Unload()
@@ -57,15 +60,17 @@ namespace ArenaOfTimeDemo2.Screens
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
             base.Update(gameTime, otherScreenHasFocus, false);
+           
+           // Logo.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
             var spriteBatch = ScreenManager.SpriteBatch;
             ScreenManager.GraphicsDevice.Clear(Color.Black);
-
+            
             spriteBatch.Begin();
-
+            
             knightSprite.Draw(gameTime, spriteBatch);
             ninjaSprite.Draw(gameTime, spriteBatch);
             persianSprite.Draw(gameTime, spriteBatch);

@@ -35,6 +35,8 @@ namespace ArenaOfTimeDemo2.Screens
                 new[] { Keys.Back, Keys.Escape }, true);
 
             _tileMap = new TileMap("map.txt");
+            TransitionOnTime = TimeSpan.FromSeconds(0);
+            TransitionOffTime = TimeSpan.FromSeconds(20);
         }
 
         public override void Activate()

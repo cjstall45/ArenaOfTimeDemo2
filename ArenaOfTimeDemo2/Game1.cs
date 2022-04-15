@@ -11,7 +11,6 @@ namespace ArenaOfTimeDemo2
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private readonly ScreenManager _screenManager;
-
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -43,17 +42,18 @@ namespace ArenaOfTimeDemo2
 
         protected override void LoadContent()
         {
-
         }
 
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
+
             base.Draw(gameTime);
         }
     }

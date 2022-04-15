@@ -18,6 +18,7 @@ namespace ArenaOfTimeDemo2.StateManagement
         private readonly ContentManager _content;
         private readonly InputState _input = new InputState();
 
+
         private bool _isInitialized;
 
         /// <summary>

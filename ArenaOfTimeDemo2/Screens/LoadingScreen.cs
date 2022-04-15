@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using ArenaOfTimeDemo2.StateManagement;
 
+
 namespace ArenaOfTimeDemo2.Screens
 {
     // The loading screen coordinates transitions between the menu system and the
@@ -21,13 +22,14 @@ namespace ArenaOfTimeDemo2.Screens
         private readonly bool _loadingIsSlow;
         private bool _otherScreensAreGone;
         private readonly GameScreen[] _screensToLoad;
-
+        // private Cube cube;
+        private LoadingScreenLogo cube;
         // Constructor is private: loading screens should be activated via the static Load method instead.
         private LoadingScreen(ScreenManager screenManager, bool loadingIsSlow, GameScreen[] screensToLoad)
         {
             _loadingIsSlow = loadingIsSlow;
             _screensToLoad = screensToLoad;
-
+            cube = new LoadingScreenLogo(screenManager.Game);
             TransitionOnTime = TimeSpan.FromSeconds(0.5);
         }
 
@@ -43,11 +45,13 @@ namespace ArenaOfTimeDemo2.Screens
             var loadingScreen = new LoadingScreen(screenManager, loadingIsSlow, screensToLoad);
 
             screenManager.AddScreen(loadingScreen, controllingPlayer);
+            
         }
 
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+            cube.Update(gameTime);
 
             // If all the previous screens have finished transitioning
             // off, it is time to actually perform the load.
@@ -98,7 +102,7 @@ namespace ArenaOfTimeDemo2.Screens
                 var textPosition = (viewportSize - textSize) / 2;
 
                 var color = Color.White * TransitionAlpha;
-
+                cube.Draw();
                 // Draw the text.
                 spriteBatch.Begin();
                 spriteBatch.DrawString(font, message, textPosition, color);
