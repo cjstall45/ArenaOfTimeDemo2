@@ -18,7 +18,8 @@ namespace ArenaOfTimeDemo2.Screens
         private ContentManager _content;
         private bool player1Ready = false;
         private bool player2Ready = false;
-
+        private Characters player1Character;
+        private Characters player2Character;
         public CharacterSelectMenu()
         {
             _menuLeft = new InputAction(
@@ -64,10 +65,22 @@ namespace ArenaOfTimeDemo2.Screens
                 if (playerIndex == PlayerIndex.One && _tileMap.player1Index == 0)
                 {
                     player1Ready = true;
+                    player1Character = Characters.Viking;
                 }
                 else if(playerIndex == PlayerIndex.Two && _tileMap.player2Index == 0)
                 {
                     player2Ready = true;
+                    player1Character = Characters.Viking;
+                }
+                else if(playerIndex == PlayerIndex.One && _tileMap.player1Index == 1)
+                {
+                    player1Ready = true;
+                    player1Character = Characters.Ninja;
+                }
+                else if (playerIndex == PlayerIndex.Two && _tileMap.player2Index == 1)
+                {
+                    player2Ready = true;
+                    player2Character = Characters.Ninja;
                 }
             }    
             else if (_menuCancel.Occurred(input, null, out playerIndex))
@@ -81,7 +94,7 @@ namespace ArenaOfTimeDemo2.Screens
                     player2Ready = false;
                 }
             }
-            if(player1Ready && player2Ready) LoadingScreen.Load(ScreenManager, true, null, new GameplayScreen());
+            if(player1Ready && player2Ready) LoadingScreen.Load(ScreenManager, true, null, new GameplayScreen(player1Character, player2Character));
         }
 
         public override void Draw(GameTime gameTime)

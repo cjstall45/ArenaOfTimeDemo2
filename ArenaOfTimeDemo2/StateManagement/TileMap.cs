@@ -15,6 +15,7 @@ namespace ArenaOfTimeDemo2.StateManagement
         public int player2Index = 0;
 
         Texture2D _tilesetTexture;
+        Texture2D ninjaTile;
 
         Rectangle[] _tiles;
 
@@ -37,6 +38,7 @@ namespace ArenaOfTimeDemo2.StateManagement
 
             var tilesetFilename = lines[0].Trim();
             _tilesetTexture = content.Load<Texture2D>(tilesetFilename);
+            ninjaTile = content.Load<Texture2D>("ninjaTile");
 
             var secondLine = lines[1].Split(',');
             _tileWidth = int.Parse(secondLine[0]);
@@ -156,6 +158,15 @@ namespace ArenaOfTimeDemo2.StateManagement
                                 Color.White
                             );
                         }
+                    }
+                    else if(y == 3 && x == 5)
+                    {
+                        spriteBatch.Draw(
+                                ninjaTile, 
+                                new Vector2(5 * _tileWidth, 3 * _tileHeight),
+                                null,
+                                Color.White
+                            );
                     }
                     else
                     {

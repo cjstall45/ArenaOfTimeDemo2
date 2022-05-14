@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using ArenaOfTimeDemo2.StateManagement;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
+using ArenaOfTimeDemo2.Fighters;
 
 namespace ArenaOfTimeDemo2.Screens
 {
@@ -21,13 +22,16 @@ namespace ArenaOfTimeDemo2.Screens
         private Texture2D HealthBar;
         private Texture2D background;
         private Song forestMusic;
-        private Fighters.VikingSprite vikingSprite1;
-        private Fighters.VikingSprite vikingSprite2;
+
+        private FighterSprite Fighter1;
+        private FighterSprite Fighter2;
+        private Characters player1;
+        private Characters player2;
 
         private float _pauseAlpha;
         private readonly InputAction _pauseAction;
 
-        public GameplayScreen()
+        public GameplayScreen(Characters player1, Characters player2)
         {
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
@@ -35,6 +39,8 @@ namespace ArenaOfTimeDemo2.Screens
             _pauseAction = new InputAction(
                 new[] { Buttons.Start, Buttons.Back },
                 new[] { Keys.Back, Keys.Escape }, true);
+            this.player1 = player1;
+            this.player2 = player2;
         }
 
         // Load graphics content for the game
@@ -45,10 +51,25 @@ namespace ArenaOfTimeDemo2.Screens
             
 
             _gameFont = _content.Load<SpriteFont>("retroGaming");
-            vikingSprite1 = new Fighters.VikingSprite(1, ScreenManager.GraphicsDevice.Viewport.Width);
-            vikingSprite2 = new Fighters.VikingSprite(2, ScreenManager.GraphicsDevice.Viewport.Width);
-            vikingSprite1.LoadContent(_content);
-            vikingSprite2.LoadContent(_content);
+            if(player1 == Characters.Viking)
+            {
+                Fighter1 = new VikingSprite(1, ScreenManager.GraphicsDevice.Viewport.Width);
+            }
+            else
+            {
+                Fighter1 = new NinjaSprite(1, ScreenManager.GraphicsDevice.Viewport.Width);
+            }
+            if (player2 == Characters.Viking)
+            {
+                Fighter2 = new VikingSprite(2, ScreenManager.GraphicsDevice.Viewport.Width);
+            }
+            else
+            {
+                Fighter2 = new NinjaSprite(2, ScreenManager.GraphicsDevice.Viewport.Width);
+            }
+           
+            Fighter1.LoadContent(_content);
+            Fighter2.LoadContent(_content);
             HealthBarShell = _content.Load<Texture2D>("emptyHealthBar");
             HealthBar = _content.Load<Texture2D>("HealthBarCenter");
             background = _content.Load<Texture2D>("image without mist");
@@ -106,14 +127,28 @@ namespace ArenaOfTimeDemo2.Screens
             bool gamePadDisconnected1 = !gamePadState1.IsConnected && input.GamePadWasConnected[1];
             bool gamePadDisconnected2 = !gamePadState2.IsConnected && input.GamePadWasConnected[2];
 
-            if (vikingSprite1.HealthPercent == 0 || vikingSprite2.HealthPercent == 0)
+            if (Fighter1.HealthPercent == 0 || Fighter2.HealthPercent == 0)
             {
-                if (vikingSprite1.dead || vikingSprite2.dead)
+                if (Fighter1.dead || Fighter2.dead)
                 {
-                    vikingSprite1 = new Fighters.VikingSprite(1, ScreenManager.GraphicsDevice.Viewport.Width);
-                    vikingSprite2 = new Fighters.VikingSprite(2, ScreenManager.GraphicsDevice.Viewport.Width);
-                    vikingSprite1.LoadContent(_content);
-                    vikingSprite2.LoadContent(_content);
+                    if (player1 == Characters.Viking)
+                    {
+                        Fighter1 = new VikingSprite(1, ScreenManager.GraphicsDevice.Viewport.Width);
+                    }
+                    else
+                    {
+                        Fighter1 = new NinjaSprite(1, ScreenManager.GraphicsDevice.Viewport.Width);
+                    }
+                    if (player2 == Characters.Viking)
+                    {
+                        Fighter2 = new VikingSprite(2, ScreenManager.GraphicsDevice.Viewport.Width);
+                    }
+                    else
+                    {
+                        Fighter2 = new NinjaSprite(2, ScreenManager.GraphicsDevice.Viewport.Width);
+                    }
+                    Fighter1.LoadContent(_content);
+                    Fighter2.LoadContent(_content);
                 }
             }
 
@@ -128,50 +163,50 @@ namespace ArenaOfTimeDemo2.Screens
             }
             else
             {
-                vikingSprite1.Update(gameTime, input);
-                vikingSprite2.Update(gameTime, input);
+                Fighter1.Update(gameTime, input);
+                Fighter2.Update(gameTime, input);
                 //check collisions
-                if (vikingSprite1.Hurtbox.Bounds.CollidesWith(vikingSprite2.Hurtbox.Bounds))
+                if (Fighter1.Hurtbox.Bounds.CollidesWith(Fighter2.Hurtbox.Bounds))
                 {
-                    vikingSprite1.CollidingRight = true;
-                    vikingSprite2.CollidingLeft = true;
+                    Fighter1.CollidingRight = true;
+                    Fighter2.CollidingLeft = true;
                 }
                 else
                 {
-                    vikingSprite1.CollidingRight = false;
-                    vikingSprite2.CollidingLeft = false;
+                    Fighter1.CollidingRight = false;
+                    Fighter2.CollidingLeft = false;
                 }
 
-                if (vikingSprite1.Hurtbox.Bounds.Left < 20 || vikingSprite1.Hurtbox.Bounds.Right > ScreenManager.GraphicsDevice.Viewport.Width - 20)
+                if (Fighter1.Hurtbox.Bounds.Left < 0 || Fighter1.Hurtbox.Bounds.Right > ScreenManager.GraphicsDevice.Viewport.Width )
                 {
-                    vikingSprite1.CollidingLeft = true;
+                    Fighter1.CollidingLeft = true;
                 }
                 else
                 {
-                    vikingSprite1.CollidingLeft = false;
+                    Fighter1.CollidingLeft = false;
                 }
 
-                if (vikingSprite2.Hurtbox.Bounds.Left < 20 || vikingSprite2.Hurtbox.Bounds.Right > ScreenManager.GraphicsDevice.Viewport.Width - 20)
+                if (Fighter2.Hurtbox.Bounds.Left < 0 || Fighter2.Hurtbox.Bounds.Right > ScreenManager.GraphicsDevice.Viewport.Width )
                 {
-                    vikingSprite2.CollidingRight = true;
+                    Fighter2.CollidingRight = true;
                 }
                 else
                 {
-                    vikingSprite2.CollidingRight = false;
+                    Fighter2.CollidingRight = false;
                 }
 
-                if (vikingSprite2.Attack1Hitbox.Active && vikingSprite1.Hurtbox.Bounds.CollidesWith(vikingSprite2.Attack1Hitbox.Bounds))
+                if (Fighter2.Attack1Hitbox.Active && Fighter1.Hurtbox.Bounds.CollidesWith(Fighter2.Attack1Hitbox.Bounds))
                 {
-                    if (vikingSprite1.Hurtbox.Active)
+                    if (Fighter1.Hurtbox.Active)
                     {
-                        vikingSprite1.Hit();
+                        Fighter1.Hit(player2);
                     }
                 }
-                if (vikingSprite1.Attack1Hitbox.Active && vikingSprite2.Hurtbox.Bounds.CollidesWith(vikingSprite1.Attack1Hitbox.Bounds))
+                if (Fighter1.Attack1Hitbox.Active && Fighter2.Hurtbox.Bounds.CollidesWith(Fighter1.Attack1Hitbox.Bounds))
                 {
-                    if (vikingSprite2.Hurtbox.Active)
+                    if (Fighter2.Hurtbox.Active)
                     {
-                        vikingSprite2.Hit();
+                        Fighter2.Hit(player1);
                     }
                 }
             }
@@ -190,19 +225,19 @@ namespace ArenaOfTimeDemo2.Screens
 
             spriteBatch.Begin(SpriteSortMode.BackToFront);
 
-            vikingSprite1.Draw(gameTime, spriteBatch);
-            vikingSprite2.Draw(gameTime, spriteBatch);
+            Fighter1.Draw(gameTime, spriteBatch);
+            Fighter2.Draw(gameTime, spriteBatch);
             spriteBatch.Draw(HealthBarShell, new Vector2(20, 5), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(HealthBar, new Vector2(23, 9), new Rectangle(0, 0, (int)(274 * vikingSprite1.HealthPercent), 27), Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(HealthBar, new Vector2(23, 9), new Rectangle(0, 0, (int)(274 * Fighter1.HealthPercent), 27), Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             spriteBatch.Draw(HealthBarShell, new Vector2(viewport.Width - 300, 5), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(HealthBar, new Vector2(viewport.Width - 297, 9), new Rectangle(0, 0, (int)(274 * vikingSprite2.HealthPercent), 27), Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(HealthBar, new Vector2(viewport.Width - 297, 9), new Rectangle(0, 0, (int)(274 * Fighter2.HealthPercent), 27), Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             spriteBatch.Draw(background, new Vector2(0, 30), null, Color.White, 0, Vector2.Zero, 1.3f, SpriteEffects.None, 1f);
-            if (vikingSprite1.HealthPercent == 0)
+            if (Fighter1.HealthPercent == 0)
             {
                 spriteBatch.DrawString(_gameFont, "Player 2 wins!", textPosition, Color.Red);
 
             }
-            if (vikingSprite2.HealthPercent == 0)
+            if (Fighter2.HealthPercent == 0)
             {
                 spriteBatch.DrawString(_gameFont, "Player 1 wins!", textPosition, Color.Red);
             }

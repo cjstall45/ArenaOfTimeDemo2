@@ -1,25 +1,28 @@
-﻿using ArenaOfTimeDemo2.StateManagement;
-using ArenaOfTimeDemo2.Collisions;
+﻿using ArenaOfTimeDemo2.Collisions;
+using ArenaOfTimeDemo2.StateManagement;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Audio;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace ArenaOfTimeDemo2.Fighters
 {
-    public class VikingSprite: FighterSprite
+    class NinjaSprite : FighterSprite
     {
         private AnimationState animationState;
 
-        private float animationSpeed = 0.15f;
+        private float animationSpeed = 0.1f;
 
-        private Texture2D[] idleTextures = new Texture2D[6];
-        private Texture2D[] walkingTextures = new Texture2D[6];
-        private Texture2D[] attackTextures = new Texture2D[6];
-        private Texture2D[] hitTextures = new Texture2D[3];
-        private Texture2D[] deadTextures = new Texture2D[4];
-        private Texture2D[] blockTextures = new Texture2D[5];
+        private Texture2D idleTexture;
+        private Texture2D walkingTexture;
+        private Texture2D attackTexture;
+        private Texture2D hitTexture;
+        private Texture2D deadTexture;
+
 
         private double animationTimer;
 
@@ -32,8 +35,8 @@ namespace ArenaOfTimeDemo2.Fighters
         public bool CollidingLeft { get; set; } = false;
         public bool CollidingRight { get; set; } = false;
         public bool dead { get; set; } = false;
-        public Characters attacker;
         private bool activeAnimation = false;
+        public Characters attacker;
         private SoundEffect hitSound;
         private SoundEffect damageSound;
 
@@ -41,22 +44,22 @@ namespace ArenaOfTimeDemo2.Fighters
         /// initalized the sprite in its starting position. Adds Hurtboxes and hitboxes for the sprits attacks
         /// </summary>
         /// <param name="player">the index for player 1 or 2</param>
-        public VikingSprite(int player, int screenSize)
+        public NinjaSprite(int player, int screenSize)
         {
             if (player == 1)
             {
                 playerNumber = 1;
-                Position = new Vector2(80, 300);
-                Hurtbox = new Hitbox(Position.X, Position.Y - 60, 76, 120);
-                Attack1Hitbox = new Hitbox(Hurtbox.Bounds.Right, Hurtbox.Bounds.Top + 7, 76, 148);
+                Position = new Vector2(80, 290);
+                Hurtbox = new Hitbox(Position.X, Position.Y, 80, 120);
+                Attack1Hitbox = new Hitbox(Hurtbox.Bounds.Right, Hurtbox.Bounds.Top + 7, 120, 148);
                 Attack1Hitbox.Active = false;
             }
             else
             {
                 playerNumber = 2;
-                Position = new Vector2(screenSize - 130, 300);
-                Hurtbox = new Hitbox(Position.X , Position.Y, 76, 120);
-                Attack1Hitbox = new Hitbox(Hurtbox.Bounds.Left - 76, Hurtbox.Bounds.Top + 7, 76, 148);
+                Position = new Vector2(screenSize - 130, 290);
+                Hurtbox = new Hitbox(Position.X + 20, Position.Y, 80, 120);
+                Attack1Hitbox = new Hitbox(Hurtbox.Bounds.Left - 120, Hurtbox.Bounds.Top + 7, 120, 148);
                 Attack1Hitbox.Active = false;
             }
         }
@@ -81,37 +84,12 @@ namespace ArenaOfTimeDemo2.Fighters
         /// <param name="content"></param>
         public void LoadContent(ContentManager content)
         {
-            idleTextures[0] = content.Load<Texture2D>("ready_1.1");
-            idleTextures[1] = content.Load<Texture2D>("ready_2.1");
-            idleTextures[2] = content.Load<Texture2D>("ready_3.1");
-            idleTextures[3] = content.Load<Texture2D>("ready_4.1");
-            idleTextures[4] = content.Load<Texture2D>("ready_5.1");
-            idleTextures[5] = content.Load<Texture2D>("ready_6.1");
-            walkingTextures[0] = content.Load<Texture2D>("walk_1");
-            walkingTextures[1] = content.Load<Texture2D>("walk_2");
-            walkingTextures[2] = content.Load<Texture2D>("walk_3");
-            walkingTextures[3] = content.Load<Texture2D>("walk_4");
-            walkingTextures[4] = content.Load<Texture2D>("walk_5");
-            walkingTextures[5] = content.Load<Texture2D>("walk_6");
-            attackTextures[0] = content.Load<Texture2D>("attack1_1");
-            attackTextures[1] = content.Load<Texture2D>("attack1_2");
-            attackTextures[2] = content.Load<Texture2D>("attack1_3");
-            attackTextures[3] = content.Load<Texture2D>("attack1_4");
-            attackTextures[4] = content.Load<Texture2D>("attack1_5");
-            attackTextures[5] = content.Load<Texture2D>("attack1_6");
-            hitTextures[0] = content.Load<Texture2D>("hit_1");
-            hitTextures[1] = content.Load<Texture2D>("hit_2");
-            hitTextures[2] = content.Load<Texture2D>("hit_3");
-            deadTextures[0] = content.Load<Texture2D>("dead_1");
-            deadTextures[1] = content.Load<Texture2D>("dead_2");
-            deadTextures[2] = content.Load<Texture2D>("dead_3");
-            deadTextures[3] = content.Load<Texture2D>("dead_4");
-            blockTextures[0] = content.Load<Texture2D>("block_1");
-            blockTextures[1] = content.Load<Texture2D>("block_2");
-            blockTextures[2] = content.Load<Texture2D>("block_3");
-            blockTextures[3] = content.Load<Texture2D>("block_4");
-            blockTextures[4] = content.Load<Texture2D>("block_5");
+            idleTexture = content.Load<Texture2D>("Idle");
+            hitTexture = content.Load<Texture2D>("Take hit");
+            attackTexture = content.Load<Texture2D>("Attack1");
             hitSound = content.Load<SoundEffect>("hit-impact-sword-2");
+            walkingTexture = content.Load<Texture2D>("Run");
+            deadTexture = content.Load<Texture2D>("Death");
             damageSound = content.Load<SoundEffect>("voice-adultmale-paingrunts-12");
         }
 
@@ -123,9 +101,8 @@ namespace ArenaOfTimeDemo2.Fighters
         {
 
             var player = new PlayerIndex();
-            if (playerNumber == 1 &&!activeAnimation && input.IsButtonPressed(Buttons.A, PlayerIndex.One, out player ))
+            if (playerNumber == 1 && !activeAnimation && input.IsButtonPressed(Buttons.A, PlayerIndex.One, out player))
             {
-                Hurtbox.Active = true;
                 activeAnimation = true;
                 animationState = AnimationState.attack1;
                 animationFrame = 0;
@@ -133,72 +110,50 @@ namespace ArenaOfTimeDemo2.Fighters
             }
             else if (playerNumber == 1 && !activeAnimation && (input.IsButtonPressed(Buttons.DPadLeft, PlayerIndex.One, out player) || input.IsButtonPressed(Buttons.LeftThumbstickLeft, PlayerIndex.One, out player)))
             {
-                Hurtbox.Active = true;
-                animationSpeed = 0.15f;
-                if (!CollidingLeft) Position += new Vector2((float)-3, 0); 
+                if (!CollidingLeft) Position += new Vector2((float)-4, 0);
                 animationState = AnimationState.backingup;
             }
             else if (playerNumber == 1 && !activeAnimation && (input.IsButtonPressed(Buttons.DPadRight, PlayerIndex.One, out player) || input.IsButtonPressed(Buttons.LeftThumbstickRight, PlayerIndex.One, out player)))
             {
-                animationSpeed = 0.15f;
-                if (!CollidingRight) { Position += new Vector2((float)3, 0); }
+                if (!CollidingRight) { Position += new Vector2((float)4, 0); }
                 animationState = AnimationState.walking;
-            }
-            else if (playerNumber == 1 &&!activeAnimation && input.IsNewButtonPress(Buttons.B, PlayerIndex.One, out player))
-            {
-                activeAnimation = true;
-                animationState = AnimationState.block;
-                animationFrame = 0;
-                Hurtbox.Active = false;
             }
             else if (playerNumber == 2 && !activeAnimation && input.IsButtonPressed(Buttons.A, PlayerIndex.Two, out player))
             {
-                Hurtbox.Active = true;
                 activeAnimation = true;
                 animationState = AnimationState.attack1;
                 animationFrame = 0;
-                animationSpeed = .1f;
-            }
-            else if (playerNumber == 2 && !activeAnimation && input.IsNewButtonPress(Buttons.B, PlayerIndex.Two, out player))
-            {
-                activeAnimation = true;
-                animationState = AnimationState.block;
-                animationFrame = 0;
-                Hurtbox.Active = false;
+                animationSpeed = .125f;
             }
             else if (playerNumber == 2 && !activeAnimation && (input.IsButtonPressed(Buttons.DPadLeft, PlayerIndex.Two, out player) || input.IsButtonPressed(Buttons.LeftThumbstickLeft, PlayerIndex.Two, out player)))
             {
-                Hurtbox.Active = true;
-                animationSpeed = 0.15f;
-                if (!CollidingLeft) { Position += new Vector2((float)-3, 0); }
-                animationState = AnimationState.backingup;
+                if (!CollidingLeft) { Position += new Vector2((float)-4, 0); }
+                animationState = AnimationState.walking;
             }
             else if (playerNumber == 2 && !activeAnimation && (input.IsButtonPressed(Buttons.DPadRight, PlayerIndex.Two, out player) || input.IsButtonPressed(Buttons.LeftThumbstickRight, PlayerIndex.Two, out player)))
             {
-                Hurtbox.Active = true;
-                animationSpeed = 0.15f;
-                if (!CollidingRight) Position += new Vector2((float)3, 0); 
-                animationState = AnimationState.walking;
+                if (!CollidingRight) Position += new Vector2((float)4, 0);
+                animationState = AnimationState.backingup;
             }
             else
             {
                 if ((int)animationState < 3)
                 {
-                    animationSpeed = 0.15f;
-                    Hurtbox.Active = true;
                     animationState = AnimationState.idle;
                 }
 
             }
-            Hurtbox.Bounds.X = Position.X;
+            
             Hurtbox.Bounds.Y = Position.Y;
-            if(playerNumber == 1)
+            if (playerNumber == 1)
             {
+                Hurtbox.Bounds.X = Position.X;
                 Attack1Hitbox.Bounds.X = Hurtbox.Bounds.Right;
             }
             else
             {
-                Attack1Hitbox.Bounds.X = Hurtbox.Bounds.Left - 76;
+                Hurtbox.Bounds.X = Position.X + 20;
+                Attack1Hitbox.Bounds.X = Hurtbox.Bounds.Left - 120;
             }
         }
 
@@ -217,25 +172,25 @@ namespace ArenaOfTimeDemo2.Fighters
                 switch (animationState)
                 {
                     case AnimationState.idle:
-                        if (animationFrame > 5) animationFrame = 0;
+                        if (animationFrame > 3) animationFrame = 0;
                         break;
                     case AnimationState.walking:
-                        if (animationFrame > 5) animationFrame = 0;
+                        if (animationFrame > 7) animationFrame = 0;
                         break;
                     case AnimationState.backingup:
-                        if (animationFrame > 5) animationFrame = 0;
+                        if (animationFrame > 7) animationFrame = 0;
                         break;
                     case AnimationState.attack1:
-                        if (animationFrame > 5)
+                        if (animationFrame > 3)
                         {
-                            animationSpeed = 0.15f;
+                            animationSpeed = 0.1f;
                             animationFrame = 0;
                             animationState = AnimationState.idle;
                             activeAnimation = false;
                         }
                         break;
                     case AnimationState.hit:
-                        if(animationFrame > 2)
+                        if (animationFrame > 2)
                         {
                             animationFrame = 0;
                             animationState = AnimationState.idle;
@@ -244,7 +199,7 @@ namespace ArenaOfTimeDemo2.Fighters
                             activeAnimation = false;
                             if (attacker == Characters.Ninja)
                             {
-                                HealthPercent -= .22f;
+                                HealthPercent -= .20f;
                             }
                             else
                             {
@@ -260,17 +215,10 @@ namespace ArenaOfTimeDemo2.Fighters
                         }
                         break;
                     case AnimationState.dead:
-                        if(animationFrame > 3)
+                        if (animationFrame > 6)
                         {
-                            animationFrame = 3;
+                            animationFrame = 6;
                             dead = true;
-                        }
-                        break;
-                    case AnimationState.block:
-                        if(animationFrame > 4)
-                        {
-                            animationFrame = 4;
-                            activeAnimation = false;
                         }
                         break;
                 }
@@ -281,39 +229,45 @@ namespace ArenaOfTimeDemo2.Fighters
                 case AnimationState.idle:
                     if (playerNumber == 1)
                     {
-                        spriteBatch.Draw(idleTextures[animationFrame], Position, null, Color.White, 0, new Vector2(0, 0), 3.8f, SpriteEffects.None, .5f);
+                        var source = new Rectangle(animationFrame * 200, 0, 200, 200);
+                        spriteBatch.Draw(idleTexture, Position, source, Color.White, 0, new Vector2(75, 64), 2.0f, SpriteEffects.None, 0);
                     }
                     else
                     {
-                        spriteBatch.Draw(idleTextures[animationFrame], Position, null, Color.White, 0, new Vector2(0, 0), 3.8f, SpriteEffects.FlipHorizontally, .5f);
+                        var source = new Rectangle(animationFrame * 200, 0, 200, 200);
+                        spriteBatch.Draw(idleTexture, Position, source, Color.White, 0, new Vector2(75, 64), 2.0f, SpriteEffects.FlipHorizontally, 0);
                     }
                     break;
                 case AnimationState.walking:
                     if (playerNumber == 1)
                     {
-                        spriteBatch.Draw(walkingTextures[animationFrame], Position, null, Color.White, 0, new Vector2(0, 1), 3.8f, SpriteEffects.None, .5f);
+                        var source = new Rectangle(animationFrame * 200, 0, 200, 200);
+                        spriteBatch.Draw(walkingTexture, Position, source, Color.White, 0, new Vector2(75, 64), 2.0f, SpriteEffects.None, 0);
                     }
                     else
                     {
-                        spriteBatch.Draw(walkingTextures[5 - animationFrame], Position, null, Color.White, 0, new Vector2(0, 1), 3.8f, SpriteEffects.FlipHorizontally, .5f);
+                        var source = new Rectangle(animationFrame * 200, 0, 200, 200);
+                        spriteBatch.Draw(walkingTexture, Position, source, Color.White, 0, new Vector2(75, 64), 2.0f, SpriteEffects.FlipHorizontally, 0);
                     }
                     break;
                 case AnimationState.backingup:
                     if (playerNumber == 1)
                     {
-                        spriteBatch.Draw(walkingTextures[5 - animationFrame], Position, null, Color.White, 0, new Vector2(0, 1), 3.8f, SpriteEffects.None, .5f);
+                        var source = new Rectangle((7 - animationFrame) * 200, 0, 200, 200);
+                        spriteBatch.Draw(walkingTexture, Position, source, Color.White, 0, new Vector2(75, 64), 2.0f, SpriteEffects.None, 0f);
                     }
                     else
                     {
-                        spriteBatch.Draw(walkingTextures[animationFrame], Position, null, Color.White, 0, new Vector2(0, 1), 3.8f, SpriteEffects.FlipHorizontally, .5f);
+                        var source = new Rectangle((7 - animationFrame) * 200, 0, 200, 200);
+                        spriteBatch.Draw(walkingTexture, Position, source, Color.White, 0, new Vector2(75, 64), 2.0f, SpriteEffects.FlipHorizontally, 0f);
                     }
-                    
                     break;
                 case AnimationState.attack1:
-                    if(playerNumber == 1)
+                    if (playerNumber == 1)
                     {
-                        spriteBatch.Draw(attackTextures[animationFrame], Position, null, Color.White, 0, new Vector2(16, 7), 3.8f, SpriteEffects.None, 0);
-                        if(animationFrame == 3)
+                        var source = new Rectangle(animationFrame * 200, 0, 200, 200);
+                        spriteBatch.Draw(attackTexture, Position, source, Color.White, 0, new Vector2(75, 64), 2.0f, SpriteEffects.None, 0f);
+                        if (animationFrame == 2)
                         {
                             Attack1Hitbox.Active = true;
                         }
@@ -324,8 +278,9 @@ namespace ArenaOfTimeDemo2.Fighters
                     }
                     else
                     {
-                        spriteBatch.Draw(attackTextures[animationFrame], Position, null, Color.White, 0, new Vector2(22, 7), 3.8f, SpriteEffects.FlipHorizontally, 0);
-                        if (animationFrame == 3)
+                        var source = new Rectangle(animationFrame * 200, 0, 200, 200);
+                        spriteBatch.Draw(attackTexture, Position, source, Color.White, 0, new Vector2(75, 64), 2.0f, SpriteEffects.FlipHorizontally, 0f);
+                        if (animationFrame == 2)
                         {
                             Attack1Hitbox.Active = true;
                         }
@@ -336,33 +291,27 @@ namespace ArenaOfTimeDemo2.Fighters
                     }
                     break;
                 case AnimationState.hit:
-                    if(playerNumber == 1)
+                    if (playerNumber == 1)
                     {
-                        spriteBatch.Draw(hitTextures[animationFrame], Position, null, Color.Red, 0, new Vector2(3, -1), 3.8f, SpriteEffects.None, .5f);
+                        var source = new Rectangle(animationFrame * 200, 0, 200, 200);
+                        spriteBatch.Draw(hitTexture, Position, source, Color.Red, 0, new Vector2(75, 64), 2.0f, SpriteEffects.None, 0f);
                     }
                     else
                     {
-                        spriteBatch.Draw(hitTextures[animationFrame], Position, null, Color.Red, 0, new Vector2(0, -1), 3.8f, SpriteEffects.FlipHorizontally, .5f);
+                        var source = new Rectangle(animationFrame * 200, 0, 200, 200);
+                        spriteBatch.Draw(hitTexture, Position, source, Color.Red, 0, new Vector2(75, 64), 2.0f, SpriteEffects.FlipHorizontally, 0f);
                     }
                     break;
                 case AnimationState.dead:
                     if (playerNumber == 1)
                     {
-                        spriteBatch.Draw(deadTextures[animationFrame], Position, null, Color.White, 0, new Vector2(3, -1), 3.8f, SpriteEffects.None, .5f);
+                        var source = new Rectangle(animationFrame * 200, 0, 200, 200);
+                        spriteBatch.Draw(deadTexture, Position, source, Color.White, 0, new Vector2(75, 64), 2.0f, SpriteEffects.None, 0f);
                     }
                     else
                     {
-                        spriteBatch.Draw(deadTextures[animationFrame], Position, null, Color.White, 0, new Vector2(0, -1), 3.8f, SpriteEffects.FlipHorizontally, .5f);
-                    }
-                    break;
-                case AnimationState.block:
-                    if (playerNumber == 1)
-                    {
-                        spriteBatch.Draw(blockTextures[animationFrame], new Vector2(Position.X - 4 , Position.Y - 34), null, Color.Gray, 0, new Vector2(0, 0), 3.8f, SpriteEffects.None, .5f);
-                    }
-                    else
-                    {
-                        spriteBatch.Draw(blockTextures[animationFrame], new Vector2(Position.X - 19 , Position.Y - 34), null, Color.Gray, 0, new Vector2(0, 0), 3.8f, SpriteEffects.FlipHorizontally, .5f);
+                        var source = new Rectangle(animationFrame * 200, 0, 200, 200);
+                        spriteBatch.Draw(deadTexture, Position, source, Color.White, 0, new Vector2(75, 64), 2.0f, SpriteEffects.FlipHorizontally, 0f);
                     }
                     break;
             }

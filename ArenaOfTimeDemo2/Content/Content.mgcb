@@ -121,6 +121,18 @@
 /processorParam:TextureFormat=Color
 /build:ArenaOfTimeLogo2.png
 
+#begin Attack1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Attack1.png
+
 #begin attack1_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -463,6 +475,18 @@
 /processorParam:TextureFormat=Color
 /build:dead_4.png
 
+#begin Death.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Death.png
+
 #begin emptyHealthBar.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -606,6 +630,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:monogame-logo.png
+
+#begin ninjaTile.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:ninjaTile.png
 
 #begin ready_1.1.png
 /importer:TextureImporter
@@ -758,11 +794,35 @@
 /processorParam:TextureFormat=Compressed
 /build:retroGaming.spritefont
 
+#begin Run.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Run.png
+
 #begin shield-bash-impact.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:shield-bash-impact.wav
+
+#begin Take hit.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Take hit.png
 
 #begin voice-adultmale-paingrunts-12.wav
 /importer:WavImporter
